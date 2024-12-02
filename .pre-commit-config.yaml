@@ -1,0 +1,26 @@
+repos:
+-   repo: local
+    hooks:
+    -   id: haddock
+        entry: ./build-docs.sh
+        files: '\.hs$'
+        name: haddock
+        language: system
+    -   id: hlint
+        entry: hlint
+        files: '\.hs$'
+        language: system
+        name: hlint
+    -   id: ormolu
+        entry: ormolu --mode inplace --no-cabal
+        files: '\.hs$'
+        name: ormolu
+        language: system
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+        exclude: '\.txt$'
