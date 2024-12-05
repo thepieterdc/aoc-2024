@@ -2,13 +2,16 @@ module Day5.Simple where
 
 import Data.Map (Map)
 import qualified Data.Map as Map (empty, findWithDefault, insert)
-import Data.Set (Set)
-import qualified Data.Set as Set (insert)
+import Data.Set (Set, empty)
+import qualified Data.Set as Set (empty, insert)
 import Day2.Common (parse)
 import Utils.IO (loadInput)
+import Utils.Lists (indicesOf)
 import Utils.Parser (Parser, char, digit, digits, doParse, eol, integer, some, token)
 
 type Order = [Int]
+
+type RuleMap = Map Int (Set Int)
 
 data Rule = Rule {first :: Int, second :: Int} deriving (Eq, Show)
 
@@ -33,20 +36,32 @@ parseRules = do some parseLine
 parseFile :: Parser ([Rule], [Order])
 parseFile = do rules <- parseRules; eol; orders <- parseOrders; return (rules, orders)
 
-buildLookups :: (Map Int (Set Int), Map Int (Set Int)) -> [Rule] -> (Map Int (Set Int), Map Int (Set Int))
-buildLookups (befores, afters) ((first, second) : rules) = (befores', afters)
+buildLookups :: (RuleMap, RuleMap) -> [Rule] -> (RuleMap, RuleMap)
+buildLookups (befores, afters) (rule : rules) = buildLookups (befores', afters') rules
   where
-    befores' = Map.insert first (Set.insert second $ Map.findWithDefault Set.empty first befores) befores
+    befores' = Map.insert (first rule) (Set.insert (second rule) $ Map.findWithDefault Set.empty (first rule) befores) befores
+    afters' = Map.insert (second rule) (Set.insert (first rule) $ Map.findWithDefault Set.empty (second rule) befores) befores
 buildLookups (befores, afters) [] = (befores, afters)
 
--- validOrders (rules, orders) = filter (validOrder rules) orders
+validOrders :: ([Rule], [Order]) -> [Order]
+validOrders (rawRules, orders) = filter (validOrder rules) orders
+  where
+    rules@(beforeRules, afterRules) = buildLookups (Map.empty, Map.empty) rawRules
 
--- validOrder :: [Rule] -> Order -> Bool
--- validOrder rules order = all (validAtIndex rules order) [0..length order]
+validOrder :: (RuleMap, RuleMap) -> Order -> Bool
+validOrder rules order = all (validAtIndex rules order) [0 .. (length order - 1)]
 
--- validAtIndex :: [Rule] -> Order -> Int -> Bool
--- validAtIndex rules order idx = True
---     where
+validAtIndex :: (RuleMap, RuleMap) -> Order -> Int -> Bool
+validAtIndex rules order idx = beforeValid
+  where
+    befores = Map.findWithDefault Set.empty (order !! idx) (fst rules)
+    beforeValid = all (\b -> all (> idx) (indicesOf b order)) befores
+
+rate :: [Order] -> Int
+rate (order : rest) = score + rate rest
+  where
+    score = order !! ((length order - 1) `div` 2)
+rate [] = 0
 
 main :: IO ()
-main = loadInput >>= print . buildLookups (Map.empty, Map.empty) . fst . doParse parseFile
+main = loadInput >>= print . rate . validOrders . doParse parseFile
