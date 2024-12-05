@@ -4,7 +4,7 @@
 -- Copyright   : (c) Pieter De Clercq, 2022
 -- License     : MIT
 --
--- Contains reusable filtering predicates and methods.
+-- Contains reusable methods to handle Maybe monads.
 module Utils.Maybe (module Utils.Maybe) where
 
 -- | Executes the mapping function on the given Maybe value.

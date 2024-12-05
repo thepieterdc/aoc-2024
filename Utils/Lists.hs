@@ -24,6 +24,10 @@ frequencies = map (head &&& length) . group . sort
 groupBySize :: Int -> [a] -> [[a]]
 groupBySize size = unfoldr $ listToMaybe . ap (>>) (return . splitAt size)
 
+-- | Finds all the indices of a given element in a list.
+indicesOf :: (Eq a) => a -> [a] -> [Int]
+indicesOf x = map fst . filter ((== x) . snd) . zip [0 ..]
+
 -- | Applies the given function to the element at the given position in the list.
 mapIdx ::
   -- | The position in the list to map
