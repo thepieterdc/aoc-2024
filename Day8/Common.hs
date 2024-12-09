@@ -29,8 +29,8 @@ findAntinodes exp (ant1@(x1, y1), ant2@(x2, y2)) = antinodes1 ++ antinodes2
     -- Downward line:
     --      antinone1 = left top of leftmost
     --      antinode2 = right bottom of rightmost
-    antinodes1 = [(lmX - i * xDiff, if a < 0 then lmY + i * yDiff else lmY - i * yDiff) | i <- [0 .. exp]]
-    antinodes2 = [(rmX + i * xDiff, if a < 0 then rmY - i * yDiff else rmY + i * yDiff) | i <- [0 .. exp]]
+    antinodes1 = [(lmX - i * xDiff, if a < 0 then lmY + i * yDiff else lmY - i * yDiff) | i <- [1 .. exp]]
+    antinodes2 = [(rmX + i * xDiff, if a < 0 then rmY - i * yDiff else rmY + i * yDiff) | i <- [1 .. exp]]
 
 run :: Int -> ((Int, Int), [(Char, Coordinate)]) -> [Coordinate]
 run expansion ((maxX, maxY), antennas) = antinodes
