@@ -18,7 +18,7 @@ parseFile inp = ((maxR, maxC), obstacles, guard)
     guard = head [(r, c) | r <- [0 .. length grid - 1], c <- [0 .. length (grid !! r) - 1], grid !! r !! c == Guard]
     obstacles = Set.fromList [(r, c) | r <- [0 .. length grid - 1], c <- [0 .. length (grid !! r) - 1], grid !! r !! c == Obstacle]
     maxR = length grid
-    maxC = length (head grid)
+    maxC = length $ head grid
 
 parseRow :: Parser [Tile]
 parseRow = do tiles <- some parseTile; eol; return tiles
