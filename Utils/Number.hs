@@ -8,6 +8,7 @@
 module Utils.Number (module Utils.Number) where
 
 import Data.Char (isDigit, ord, toUpper)
+import Distribution.Simple.Utils (xargs)
 
 -- | Converts a hexadecimal string to a decimal integer.
 hexToDec :: String -> Int

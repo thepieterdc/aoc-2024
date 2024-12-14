@@ -22,7 +22,6 @@ combine n (score, cache) x = (score + score', cache')
 parse :: String -> [Int]
 parse = map read . words
 
--- run :: Int -> String -> Int
 run :: Int -> String -> Int
 run n inp = fst $ foldl (combine n) (0, Map.empty) $ parse inp
 
